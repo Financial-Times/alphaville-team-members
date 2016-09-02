@@ -5,14 +5,13 @@ const url = 'https://ftalphaville2-wp.ft.com/api/get_recent_posts/?post_type=tea
 
 let cachedTeam;
 let cachedNames;
+let lastUpdate;
 
-function refreshCache() {
-	fetch(`${url}&api_key=${process.env['WP_API_KEY']}`)
+function fetchData () {
+	return fetch(`${url}&api_key=${process.env['WP_API_KEY']}`)
 		.then(res => res.json())
 		.then(json => {
 			if (json) {
-				setTimeout(refreshCache, 600000);
-
 				cachedTeam = json.posts;
 
 				cachedNames = [];
@@ -24,22 +23,57 @@ function refreshCache() {
 						});
 					});
 				}
-			} else {
-				setTimeout(refreshCache, 60000);
+
+				lastUpdate = new Date();
 			}
 		})
 		.catch((e) => {
 			console.log("Error fetching the team members", e);
-
-			setTimeout(refreshCache, 60000);
 		});
 }
-refreshCache();
 
+let teamMembersPromise = null;
 exports.getTeamMembers = function () {
-	return cachedTeam;
+	if (teamMembersPromise) {
+		return teamMembersPromise;
+	} else {
+		teamMembersPromise = new Promise((resolve, reject) => {
+			if (lastUpdate && new Date().getTime() - lastUpdate.getTime() < 600000) {
+				resolve(cachedTeam);
+				teamMembersPromise = null;
+			} else {
+				fetchData().then(() => {
+					resolve(cachedTeam);
+					teamMembersPromise = null;
+				}).catch((e) => {
+					reject(e);
+					teamMembersPromise = null;
+				});
+			}
+		});
+		return teamMembersPromise;
+	}
 };
 
+let teamMemberNamesPromise = null;
 exports.getTeamMemberNames = function () {
-	return cachedNames;
+	if (teamMemberNamesPromise) {
+		return teamMemberNamesPromise;
+	} else {
+		teamMemberNamesPromise = new Promise((resolve, reject) => {
+			if (lastUpdate && new Date().getTime() - lastUpdate.getTime() < 600000) {
+				resolve(cachedNames);
+				teamMemberNamesPromise = null;
+			} else {
+				fetchData().then(() => {
+					resolve(cachedNames);
+					teamMemberNamesPromise = null;
+				}).catch((e) => {
+					reject(e);
+					teamMemberNamesPromise = null;
+				});
+			}
+		});
+		return teamMemberNamesPromise;
+	}
 };
