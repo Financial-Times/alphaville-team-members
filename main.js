@@ -33,21 +33,28 @@ function fetchData () {
 }
 
 let teamMembersPromise = null;
+let teamMembersInProgress = false;
 exports.getMembers = function () {
-	if (teamMembersPromise) {
+	if (teamMembersInProgress) {
 		return teamMembersPromise;
 	} else {
+		teamMembersInProgress = true;
 		teamMembersPromise = new Promise((resolve, reject) => {
 			if (lastUpdate && new Date().getTime() - lastUpdate.getTime() < 600000) {
 				resolve(cachedTeam);
-				teamMembersPromise = null;
+				teamMembersInProgress = false;
 			} else {
 				fetchData().then(() => {
 					resolve(cachedTeam);
-					teamMembersPromise = null;
+					teamMembersInProgress = false;
 				}).catch((e) => {
-					reject(e);
-					teamMembersPromise = null;
+					if (cachedTeam) {
+						resolve(cachedTeam);
+						teamMembersInProgress = false;
+					} else {
+						reject(e);
+						teamMembersInProgress = false;
+					}
 				});
 			}
 		});
@@ -56,21 +63,28 @@ exports.getMembers = function () {
 };
 
 let teamMemberNamesPromise = null;
+let teamMemberNamesInProgress = false;
 exports.getMemberNames = function () {
 	if (teamMemberNamesPromise) {
 		return teamMemberNamesPromise;
 	} else {
+		teamMemberNamesInProgress = true;
 		teamMemberNamesPromise = new Promise((resolve, reject) => {
 			if (lastUpdate && new Date().getTime() - lastUpdate.getTime() < 600000) {
+				teamMemberNamesInProgress = false;
 				resolve(cachedNames);
-				teamMemberNamesPromise = null;
 			} else {
 				fetchData().then(() => {
+					teamMemberNamesInProgress = false;
 					resolve(cachedNames);
-					teamMemberNamesPromise = null;
 				}).catch((e) => {
-					reject(e);
-					teamMemberNamesPromise = null;
+					if (cachedNames) {
+						teamMemberNamesInProgress = false;
+						resolve(cachedNames);
+					} else {
+						teamMemberNamesInProgress = false;
+						reject(e);
+					}
 				});
 			}
 		});
