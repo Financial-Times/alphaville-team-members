@@ -33,7 +33,7 @@ function fetchData () {
 }
 
 let teamMembersPromise = null;
-exports.getTeamMembers = function () {
+exports.getMembers = function () {
 	if (teamMembersPromise) {
 		return teamMembersPromise;
 	} else {
@@ -56,7 +56,7 @@ exports.getTeamMembers = function () {
 };
 
 let teamMemberNamesPromise = null;
-exports.getTeamMemberNames = function () {
+exports.getMemberNames = function () {
 	if (teamMemberNamesPromise) {
 		return teamMemberNamesPromise;
 	} else {
