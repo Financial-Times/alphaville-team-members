@@ -1,18 +1,41 @@
 "use strict";
 
 const fetch = require('node-fetch');
+const _ = require('lodash');
+
+const paulSlug = 'paul-murphy';
 const url = 'https://ftalphaville2-wp.ft.com/api/get_recent_posts/?post_type=team_member';
 
 let cachedTeam;
 let cachedNames;
 let lastUpdate;
 
+
+const orderTeam = (team) => {
+	team = _.orderBy(team, ['slug']);
+
+	let paul;
+	let paulIndex;
+
+	team.forEach((tm, index) => {
+		if(tm.slug === paulSlug) {
+			paul = tm;
+			paulIndex = index;
+		}
+	});
+	return [
+		paul,
+		...team.slice(0, paulIndex),
+		...team.slice(paulIndex+1)
+	];
+};
+
 function fetchData () {
 	return fetch(`${url}&api_key=${process.env['WP_API_KEY']}`)
 		.then(res => res.json())
 		.then(json => {
 			if (json) {
-				cachedTeam = json.posts;
+				cachedTeam = orderTeam(json.posts);
 
 				cachedNames = [];
 				if (cachedTeam) {
@@ -65,7 +88,7 @@ exports.getMembers = function () {
 let teamMemberNamesPromise = null;
 let teamMemberNamesInProgress = false;
 exports.getMemberNames = function () {
-	if (teamMemberNamesPromise) {
+	if (teamMemberNamesInProgress) {
 		return teamMemberNamesPromise;
 	} else {
 		teamMemberNamesInProgress = true;
