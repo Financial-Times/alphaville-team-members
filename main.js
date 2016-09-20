@@ -4,7 +4,7 @@ const fetch = require('node-fetch');
 const _ = require('lodash');
 
 const paulSlug = 'paul-murphy';
-const url = 'https://ftalphaville2-wp.ft.com/wp/api/get_recent_posts/?post_type=team_member';
+const url = 'https://ftalphaville2-wp.ft.com/api/get_recent_posts/?post_type=team_member';
 
 let cachedTeam;
 let cachedNames;
