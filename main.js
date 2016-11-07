@@ -42,7 +42,8 @@ function fetchData () {
 					cachedTeam.forEach((obj) => {
 						cachedNames.push({
 							name: obj.title,
-							slug: obj.slug
+							slug: obj.slug,
+							headshotUrl: `http://image.webservices.ft.com/v1/images/raw/fthead:${obj.slug}?source=alphaville`
 						});
 					});
 				}
