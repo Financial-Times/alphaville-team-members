@@ -40,10 +40,12 @@ function fetchData () {
 				cachedNames = [];
 				if (cachedTeam) {
 					cachedTeam.forEach((obj) => {
+						obj.headshotUrl = `http://image.webservices.ft.com/v1/images/raw/fthead:${obj.slug}?source=alphaville`;
+
 						cachedNames.push({
 							name: obj.title,
 							slug: obj.slug,
-							headshotUrl: `http://image.webservices.ft.com/v1/images/raw/fthead:${obj.slug}?source=alphaville`
+							headshotUrl: obj.headshotUrl
 						});
 					});
 				}
