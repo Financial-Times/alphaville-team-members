@@ -40,7 +40,7 @@ function fetchData () {
 				cachedNames = [];
 				if (cachedTeam) {
 					cachedTeam.forEach((obj) => {
-						obj.headshotUrl = `http://image.webservices.ft.com/v1/images/raw/fthead:${obj.slug}?source=alphaville`;
+						obj.headshotUrl = `https://www.ft.com/__origami/service/image/v2/images/raw/fthead:${obj.slug}?source=alphaville`;
 
 						cachedNames.push({
 							name: obj.title,
