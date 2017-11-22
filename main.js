@@ -3,7 +3,7 @@
 const fetch = require('node-fetch');
 const _ = require('lodash');
 
-const paulSlug = 'paul-murphy';
+const editorSlug = 'izabella-kaminska';
 const url = `${process.env.PROD_WP_URL}/api/get_recent_posts/?post_type=team_member`;
 
 let cachedTeam;
@@ -18,7 +18,7 @@ const orderTeam = (team) => {
 	let paulIndex;
 
 	team.forEach((tm, index) => {
-		if(tm.slug === paulSlug) {
+		if(tm.slug === editorSlug) {
 			paul = tm;
 			paulIndex = index;
 		}
